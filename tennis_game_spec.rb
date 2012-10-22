@@ -131,6 +131,19 @@ describe TennisGame do
     its(:score) { should eq("Deuce") }
   end
 
+  context "deuce from 40-0 down" do
+    before {
+      subject.player_one_scores
+      subject.player_one_scores
+      subject.player_one_scores
+      subject.player_two_scores
+      subject.player_two_scores
+      subject.player_two_scores
+    }
+
+    its(:score) { should eq("Deuce") }
+  end
+
   context "advantage p2" do
     before {
       subject.player_one_scores
