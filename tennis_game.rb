@@ -8,6 +8,10 @@ class TennisGame
     @state.winner
   end
 
+  def score
+    @state.score
+  end
+
   def player_one_scores
     @state.player_one_scores
   end
@@ -36,7 +40,7 @@ class TennisGame
     @state = FortyThirtyState.new(self)
   end
 
-  def thirtyforty
+  def thirty_forty
     @state = ThirtyFortyState.new(self)
   end
 
@@ -46,6 +50,12 @@ class TennisGame
   end
 
   class NormalState < GameState
+    TENNIS_SCORES = {
+      0 => "0",
+      1 => "15",
+      2 => "30",
+      3 => "40"
+    }
     def initialize(game)
       @game = game
       @player_one_points = 0
@@ -67,12 +77,24 @@ class TennisGame
         @game.finish(:player_two)
       end
     end
+
+    def score
+      "#{TENNIS_SCORES[@player_one_points]} - #{TENNIS_SCORES[@player_two_points]}"
+    end
   end
 
   class WonState
     attr_reader :winner
     def initialize(winner)
       @winner = winner
+    end
+
+    def score
+      if winner == :player_one
+        "Player One wins"
+      else
+        "Player Two wins"
+      end
     end
   end
 
@@ -102,6 +124,10 @@ class TennisGame
     def player_two_scores
       @game.finish(:player_two)
     end
+
+    def score
+      "40 - A"
+    end
   end
 
   class DeuceState < GameState
@@ -115,6 +141,10 @@ class TennisGame
 
     def player_two_scores
       @game.advantage(:player_two)
+    end
+
+    def score
+      "Deuce"
     end
   end
 
