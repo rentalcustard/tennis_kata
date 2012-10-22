@@ -1,11 +1,6 @@
 class TennisGame
-  attr_reader :winner
   def initialize
     @state = NormalState.new(self)
-  end
-
-  def winner
-    @state.winner
   end
 
   def score
@@ -44,12 +39,7 @@ class TennisGame
     @state = ThirtyFortyState.new(self)
   end
 
-  class GameState
-    def winner
-    end
-  end
-
-  class NormalState < GameState
+  class NormalState
     TENNIS_SCORES = {
       0 => "0",
       1 => "15",
@@ -98,7 +88,7 @@ class TennisGame
     end
   end
 
-  class P1AdvantageState < GameState
+  class P1AdvantageState
     def initialize(game)
       @game = game
     end
@@ -112,7 +102,7 @@ class TennisGame
     end
   end
 
-  class P2AdvantageState < GameState
+  class P2AdvantageState
     def initialize(game)
       @game = game
     end
@@ -130,7 +120,7 @@ class TennisGame
     end
   end
 
-  class DeuceState < GameState
+  class DeuceState
     def initialize(game)
       @game = game
     end
@@ -148,7 +138,7 @@ class TennisGame
     end
   end
 
-  class FortyThirtyState < GameState
+  class FortyThirtyState
     def initialize(game)
       @game = game
     end
@@ -162,7 +152,7 @@ class TennisGame
     end
   end
 
-  class ThirtyFortyState < GameState
+  class ThirtyFortyState
     def initialize(game)
       @game = game
     end

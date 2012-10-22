@@ -1,7 +1,6 @@
 require_relative 'tennis_game'
 describe TennisGame do
   context "initially" do
-    its(:winner) { should be_nil }
     its(:score) { should eq("0 - 0")}
   end
 
@@ -10,7 +9,6 @@ describe TennisGame do
       4.times { subject.player_one_scores }
     }
 
-    its(:winner) { should eq(:player_one) }
     its(:score) { should eq("Player One wins")}
   end
 
@@ -19,13 +17,11 @@ describe TennisGame do
       4.times { subject.player_two_scores }
     }
 
-    its(:winner) { should eq(:player_two) }
     its(:score) { should eq("Player Two wins")}
   end
 
   context "15-0" do
     before { subject.player_one_scores }
-    its(:winner) { should be_nil }
 
     its(:score) { should eq("15 - 0") }
   end
@@ -132,7 +128,6 @@ describe TennisGame do
       subject.player_two_scores
     }
 
-    its(:winner) { should be_nil }
     its(:score) { should eq("Deuce") }
   end
 
@@ -147,8 +142,6 @@ describe TennisGame do
       subject.player_two_scores
     }
 
-    its(:winner) { should be_nil }
-
     its(:score) { should eq("40 - A")}
 
     context "p2 scores" do
@@ -156,7 +149,6 @@ describe TennisGame do
         subject.player_two_scores
       }
 
-      its(:winner) { should eq(:player_two) }
       its(:score) { should eq("Player Two wins") }
     end
 
@@ -165,7 +157,6 @@ describe TennisGame do
         subject.player_one_scores
       }
 
-      its(:winner) { should be_nil }
       its(:score) { should eq("Deuce") }
 
       context "and p1 scores twice more" do
@@ -174,7 +165,6 @@ describe TennisGame do
           subject.player_one_scores
         }
 
-        its(:winner) { should eq(:player_one) }
         its(:score) { should eq("Player One wins") }
       end
     end
