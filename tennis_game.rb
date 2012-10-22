@@ -39,14 +39,6 @@ class TennisGame
     @state = P2AdvantageState.new(self)
   end
 
-  def forty_thirty
-    @state = FortyThirtyState.new(self)
-  end
-
-  def thirty_forty
-    @state = ThirtyFortyState.new(self)
-  end
-
   class NormalState
     TENNIS_SCORES = {
       0 => "0",
@@ -62,8 +54,7 @@ class TennisGame
 
     def player_one_scores
       @player_one_points += 1
-      @game.forty_thirty if @player_one_points == 3 && @player_two_points == 2
-      @game.thirty_forty if @player_one_points == 2 && @player_two_points == 3
+      @game.deuce if @player_one_points == 3 and @player_two_points == 3
       if @player_one_points > 3
         @game.player_one_wins
       end
@@ -71,8 +62,7 @@ class TennisGame
 
     def player_two_scores
       @player_two_points += 1
-      @game.thirty_forty if @player_two_points == 3 && @player_one_points == 2
-      @game.forty_thirty if @player_one_points == 3 && @player_two_points == 2
+      @game.deuce if @player_one_points == 3 and @player_two_points == 3
       if @player_two_points > 3
         @game.player_two_wins
       end
@@ -142,42 +132,6 @@ class TennisGame
 
     def score
       "Deuce"
-    end
-  end
-
-  class FortyThirtyState
-    def initialize(game)
-      @game = game
-    end
-
-    def player_one_scores
-      @game.player_one_wins
-    end
-
-    def player_two_scores
-      @game.deuce
-    end
-
-    def score
-      "40 - 30"
-    end
-  end
-
-  class ThirtyFortyState
-    def initialize(game)
-      @game = game
-    end
-
-    def player_one_scores
-      @game.deuce
-    end
-
-    def player_two_scores
-      @game.player_two_wins
-    end
-
-    def score
-      "30 - 40"
     end
   end
 end
