@@ -15,6 +15,10 @@ class TennisGame
     @state.player_two_scores
   end
 
+  #arguably these methods could all be replaced by a state setter, allowing
+  #each state to know what its exit states are. I've shied away from that
+  #because such a setter would need to be public and I don't want all users
+  #of this class to be able to manipulate its state directly.
   def player_one_wins
     @state = P1WinsState.new
   end
