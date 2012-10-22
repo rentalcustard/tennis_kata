@@ -1,0 +1,1 @@
+A stab at the [tennis kata](http://codingdojo.org/cgi-bin/wiki.pl?KataTennis). I'm not sure about the duplication of logic in e.g. `NormalState#player_one_scores` and `NormalState#player_two_scores`, but I suspect it's better this way than trying to generalize it when there are only two players. Anyone for three-player tennis?
