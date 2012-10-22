@@ -27,12 +27,12 @@ class TennisGame
     @state = DeuceState.new(self)
   end
 
-  def advantage(player)
-    if player == :player_one
-      @state = P1AdvantageState.new(self)
-    else
-      @state = P2AdvantageState.new(self)
-    end
+  def advantage_player_one
+    @state = P1AdvantageState.new(self)
+  end
+
+  def advantage_player_two
+    @state = P2AdvantageState.new(self)
   end
 
   def forty_thirty
@@ -129,11 +129,11 @@ class TennisGame
     end
 
     def player_one_scores
-      @game.advantage(:player_one)
+      @game.advantage_player_one
     end
 
     def player_two_scores
-      @game.advantage(:player_two)
+      @game.advantage_player_two
     end
 
     def score
