@@ -15,8 +15,12 @@ class TennisGame
     @state.player_two_scores
   end
 
-  def finish(winner)
-    @state = WonState.new(winner)
+  def player_one_wins
+    @state = P1WinsState.new
+  end
+
+  def player_two_wins
+    @state = P2WinsState.new
   end
 
   def deuce
@@ -56,7 +60,7 @@ class TennisGame
       @player_one_points += 1
       @game.forty_thirty if @player_one_points == 3 && @player_two_points == 2
       if @player_one_points > 3
-        @game.finish(:player_one)
+        @game.player_one_wins
       end
     end
 
@@ -64,7 +68,7 @@ class TennisGame
       @player_two_points += 1
       @game.thirty_forty if @player_two_points == 3 && @player_one_points == 2
       if @player_two_points > 3
-        @game.finish(:player_two)
+        @game.player_two_wins
       end
     end
 
@@ -73,18 +77,15 @@ class TennisGame
     end
   end
 
-  class WonState
-    attr_reader :winner
-    def initialize(winner)
-      @winner = winner
-    end
-
+  class P1WinsState
     def score
-      if winner == :player_one
-        "Player One wins"
-      else
-        "Player Two wins"
-      end
+      "Player One wins"
+    end
+  end
+
+  class P2WinsState
+    def score
+      "Player Two wins"
     end
   end
 
@@ -94,7 +95,7 @@ class TennisGame
     end
 
     def player_one_scores
-      @game.finish(:player_one)
+      @game.player_one_wins
     end
 
     def player_two_scores
@@ -112,7 +113,7 @@ class TennisGame
     end
 
     def player_two_scores
-      @game.finish(:player_two)
+      @game.player_two_wins
     end
 
     def score
@@ -144,7 +145,7 @@ class TennisGame
     end
 
     def player_one_scores
-      @game.finish(:player_one)
+      @game.player_one_wins
     end
 
     def player_two_scores
@@ -162,7 +163,7 @@ class TennisGame
     end
 
     def player_two_scores
-      @game.finish(:player_two)
+      @game.player_two_wins
     end
   end
 end
