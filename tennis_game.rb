@@ -3,8 +3,12 @@ class TennisGame
     @state = NormalState.new(self)
   end
 
-  def score
-    @state.score
+  def p1_score
+    @state.p1_score
+  end
+
+  def p2_score
+    @state.p2_score
   end
 
   def player_one_scores
@@ -68,20 +72,32 @@ class TennisGame
       end
     end
 
-    def score
-      "#{TENNIS_SCORES[@player_one_points]} - #{TENNIS_SCORES[@player_two_points]}"
+    def p1_score
+      TENNIS_SCORES[@player_one_points]
+    end
+
+    def p2_score
+      TENNIS_SCORES[@player_two_points]
     end
   end
 
   class P1WinsState
-    def score
-      "Player One wins"
+    def p1_score
+      "W"
+    end
+
+    def p2_score
+      "L"
     end
   end
 
   class P2WinsState
-    def score
-      "Player Two wins"
+    def p1_score
+      "L"
+    end
+
+    def p2_score
+      "W"
     end
   end
 
@@ -96,6 +112,14 @@ class TennisGame
 
     def player_two_scores
       @game.deuce
+    end
+
+    def p1_score
+      "A"
+    end
+
+    def p2_score
+      "40"
     end
   end
 
@@ -112,8 +136,12 @@ class TennisGame
       @game.player_two_wins
     end
 
-    def score
-      "40 - A"
+    def p1_score
+      "40"
+    end
+
+    def p2_score
+      "A"
     end
   end
 
@@ -130,7 +158,11 @@ class TennisGame
       @game.advantage_player_two
     end
 
-    def score
+    def p1_score
+      "Deuce"
+    end
+
+    def p2_score
       "Deuce"
     end
   end
