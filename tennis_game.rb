@@ -1,10 +1,15 @@
 class TennisGame
   def initialize
     @state = NormalState.new(self)
+    @scoreboards = []
   end
 
-  def score
-    @state.score
+  def add_scoreboard(scoreboard)
+    @scoreboards << scoreboard
+  end
+
+  def update_scoreboards(score)
+    @scoreboards.each {|s| s.score_changed(score) }
   end
 
   def player_one_scores
@@ -15,37 +20,30 @@ class TennisGame
     @state.player_two_scores
   end
 
-  #arguably these methods could all be replaced by a state setter, allowing
-  #each state to know what its exit states are. I've shied away from that
-  #because such a setter would need to be public and I don't want all users
-  #of this class to be able to manipulate its state directly.
   def player_one_wins
-    @state = P1WinsState.new
+    @scoreboards.each(&:player_one_wins)
   end
 
   def player_two_wins
-    @state = P2WinsState.new
+    @scoreboards.each(&:player_two_wins)
   end
 
   def deuce
     @state = DeuceState.new(self)
+    self.update_scoreboards(Score.new(3, 3))
   end
 
   def advantage_player_one
     @state = P1AdvantageState.new(self)
+    self.update_scoreboards(Score.new(4, 3))
   end
 
   def advantage_player_two
     @state = P2AdvantageState.new(self)
+    self.update_scoreboards(Score.new(3, 4))
   end
 
   class NormalState
-    TENNIS_SCORES = {
-      0 => "0",
-      1 => "15",
-      2 => "30",
-      3 => "40"
-    }
     def initialize(game)
       @game = game
       @player_one_points = 0
@@ -54,34 +52,24 @@ class TennisGame
 
     def player_one_scores
       @player_one_points += 1
-      @game.deuce if @player_one_points == 3 and @player_two_points == 3
-      if @player_one_points > 3
+      if @player_one_points == 3 and @player_two_points == 3
+        @game.deuce
+      elsif @player_one_points > 3
         @game.player_one_wins
+      else
+        @game.update_scoreboards(Score.new(@player_one_points, @player_two_points))
       end
     end
 
     def player_two_scores
       @player_two_points += 1
-      @game.deuce if @player_one_points == 3 and @player_two_points == 3
-      if @player_two_points > 3
+      if @player_one_points == 3 and @player_two_points == 3
+        @game.deuce
+      elsif @player_two_points > 3
         @game.player_two_wins
+      else
+        @game.update_scoreboards(Score.new(@player_one_points, @player_two_points))
       end
-    end
-
-    def score
-      "#{TENNIS_SCORES[@player_one_points]} - #{TENNIS_SCORES[@player_two_points]}"
-    end
-  end
-
-  class P1WinsState
-    def score
-      "Player One wins"
-    end
-  end
-
-  class P2WinsState
-    def score
-      "Player Two wins"
     end
   end
 
@@ -111,10 +99,6 @@ class TennisGame
     def player_two_scores
       @game.player_two_wins
     end
-
-    def score
-      "40 - A"
-    end
   end
 
   class DeuceState
@@ -128,10 +112,6 @@ class TennisGame
 
     def player_two_scores
       @game.advantage_player_two
-    end
-
-    def score
-      "Deuce"
     end
   end
 end
