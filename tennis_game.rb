@@ -8,26 +8,19 @@ class TennisGame
     @scoreboards << scoreboard
   end
 
-  def update_scoreboards(score)
-    @scoreboards.each {|s| s.score_changed(score) }
-  end
-
   def player_one_scores
-    @state = @state.player_one_scores
-    @state.enter(self)
+    update_state(@state.player_one_scores)
   end
 
   def player_two_scores
-    @state = @state.player_two_scores
-    @state.enter(self)
+    update_state(@state.player_two_scores)
   end
 
-  def player_one_wins
-    @scoreboards.each(&:player_one_wins)
-  end
+  private
 
-  def player_two_wins
-    @scoreboards.each(&:player_two_wins)
+  def update_state(new_state)
+    @state = new_state
+    @scoreboards.each {|s| @state.score.update_scoreboard(s) }
   end
 
   class NormalState
@@ -36,8 +29,8 @@ class TennisGame
       @player_two_points = p2_points
     end
 
-    def enter(game)
-      game.update_scoreboards(Score.new(@player_one_points, @player_two_points))
+    def score
+      Score.new(@player_one_points, @player_two_points)
     end
 
     def player_one_scores
@@ -64,9 +57,8 @@ class TennisGame
   end
 
   class P1AdvantageState
-
-    def enter(game)
-      game.update_scoreboards(Score.new(4, 3))
+    def score
+      Score.new(4, 3)
     end
 
     def player_one_scores
@@ -80,8 +72,8 @@ class TennisGame
 
   class P2AdvantageState
 
-    def enter(game)
-      game.update_scoreboards(Score.new(3, 4))
+    def score
+      Score.new(3, 4)
     end
 
     def player_one_scores
@@ -94,21 +86,21 @@ class TennisGame
   end
 
   class P1WinState
-    def enter(game)
-      game.player_one_wins
+    def score
+      Player1Win.new
     end
   end
 
   class P2WinState
-    def enter(game)
-      game.player_two_wins
+    def score
+      Player2Win.new
     end
   end
 
   class DeuceState
 
-    def enter(game)
-      game.update_scoreboards(Score.new(3, 3))
+    def score
+      Score.new(3, 3)
     end
 
     def player_one_scores
