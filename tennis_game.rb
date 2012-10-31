@@ -1,6 +1,6 @@
 class TennisGame
   def initialize
-    @state = NormalState.new(self)
+    @state = NormalState.new
     @scoreboards = []
   end
 
@@ -13,11 +13,13 @@ class TennisGame
   end
 
   def player_one_scores
-    @state.player_one_scores
+    @state = @state.player_one_scores
+    @state.enter(self)
   end
 
   def player_two_scores
-    @state.player_two_scores
+    @state = @state.player_two_scores
+    @state.enter(self)
   end
 
   def player_one_wins
@@ -28,90 +30,93 @@ class TennisGame
     @scoreboards.each(&:player_two_wins)
   end
 
-  def deuce
-    @state = DeuceState.new(self)
-    self.update_scoreboards(Score.new(3, 3))
-  end
-
-  def advantage_player_one
-    @state = P1AdvantageState.new(self)
-    self.update_scoreboards(Score.new(4, 3))
-  end
-
-  def advantage_player_two
-    @state = P2AdvantageState.new(self)
-    self.update_scoreboards(Score.new(3, 4))
-  end
-
   class NormalState
-    def initialize(game)
-      @game = game
-      @player_one_points = 0
-      @player_two_points = 0
+    def initialize(p1_points=0, p2_points=0)
+      @player_one_points = p1_points
+      @player_two_points = p2_points
+    end
+
+    def enter(game)
+      game.update_scoreboards(Score.new(@player_one_points, @player_two_points))
     end
 
     def player_one_scores
-      @player_one_points += 1
-      if @player_one_points == 3 and @player_two_points == 3
-        @game.deuce
-      elsif @player_one_points > 3
-        @game.player_one_wins
+      new_p1_score = @player_one_points + 1
+      if new_p1_score == 3 and @player_two_points == 3
+        DeuceState.new
+      elsif new_p1_score > 3
+        P1WinState.new
       else
-        @game.update_scoreboards(Score.new(@player_one_points, @player_two_points))
+        NormalState.new(new_p1_score, @player_two_points)
       end
     end
 
     def player_two_scores
-      @player_two_points += 1
-      if @player_one_points == 3 and @player_two_points == 3
-        @game.deuce
-      elsif @player_two_points > 3
-        @game.player_two_wins
+      new_p2_score = @player_two_points + 1
+      if @player_one_points == 3 and new_p2_score == 3
+        DeuceState.new
+      elsif new_p2_score > 3
+        P2WinState.new
       else
-        @game.update_scoreboards(Score.new(@player_one_points, @player_two_points))
+        NormalState.new(@player_one_points, new_p2_score)
       end
     end
   end
 
   class P1AdvantageState
-    def initialize(game)
-      @game = game
+
+    def enter(game)
+      game.update_scoreboards(Score.new(4, 3))
     end
 
     def player_one_scores
-      @game.player_one_wins
+      P1WinState.new
     end
 
     def player_two_scores
-      @game.deuce
+      DeuceState.new
     end
   end
 
   class P2AdvantageState
-    def initialize(game)
-      @game = game
+
+    def enter(game)
+      game.update_scoreboards(Score.new(3, 4))
     end
 
     def player_one_scores
-      @game.deuce
+      DeuceState.new
     end
 
     def player_two_scores
-      @game.player_two_wins
+      P2WinState.new
+    end
+  end
+
+  class P1WinState
+    def enter(game)
+      game.player_one_wins
+    end
+  end
+
+  class P2WinState
+    def enter(game)
+      game.player_two_wins
     end
   end
 
   class DeuceState
-    def initialize(game)
-      @game = game
+
+    def enter(game)
+      game.update_scoreboards(Score.new(3, 3))
     end
 
     def player_one_scores
-      @game.advantage_player_one
+      P1AdvantageState.new
     end
 
     def player_two_scores
-      @game.advantage_player_two
+      P2AdvantageState.new
     end
   end
 end
