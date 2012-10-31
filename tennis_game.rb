@@ -34,24 +34,24 @@ class TennisGame
     end
 
     def player_one_scores
-      new_p1_score = @player_one_points + 1
-      if new_p1_score == 3 and @player_two_points == 3
-        DeuceState.new
-      elsif new_p1_score > 3
-        P1WinState.new
-      else
-        NormalState.new(new_p1_score, @player_two_points)
-      end
+      point_scored(@player_one_points + 1, @player_two_points)
     end
 
     def player_two_scores
-      new_p2_score = @player_two_points + 1
-      if @player_one_points == 3 and new_p2_score == 3
+      point_scored(@player_one_points, @player_two_points + 1)
+    end
+
+    private
+
+    def point_scored(player_one_points, player_two_points)
+      if player_one_points == 3 and player_two_points == 3
         DeuceState.new
-      elsif new_p2_score > 3
+      elsif player_one_points > 3
+        P1WinState.new
+      elsif player_two_points > 3
         P2WinState.new
       else
-        NormalState.new(@player_one_points, new_p2_score)
+        NormalState.new(player_one_points, player_two_points)
       end
     end
   end
